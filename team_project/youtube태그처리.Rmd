@@ -1,0 +1,38 @@
+---
+title: "youtube태그처리"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+library(tidyverse)
+
+KRvideos <- read_csv("KRvideos.csv")
+KRvideos <- KRvideos[,c("category_id","tags")]
+
+extract_tag <- function(category_num){
+  df <- subset.data.frame(KRvideos, (category_id==category_num)&(tags!='[none]'))
+  keywords_vector <- vector()
+  for (tag in df$tags){
+    keywords <- tag %>%
+      tolower() %>%
+      str_remove_all('"') %>%
+      str_replace_all(" ", "\\|") %>%
+      str_split("\\|") %>%
+      unlist() %>%
+      unique()
+    keywords_vector <- append(keywords_vector, keywords)
+  }
+  keywords_df <- data.frame(keywords_vector) %>%
+    table() %>%
+    data.frame() %>%
+    arrange(desc(Freq)) %>%
+    write.csv(file=paste0("freq_",as.character(category_num),".csv"), row.names=FALSE, fileEncoding="UTF-8")
+}
+
+for (i in c(17,19,20,22)){
+  extract_tag(i)
+}
+```
