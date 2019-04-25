@@ -1,0 +1,164 @@
+ui <- fluidPage(
+  titlePanel('Tag count'),
+  selectInput('ca','Category:',
+              choices = c('Film & Animation','Autos','Music','Animals',
+                          'Sports','Travel & Event','Gaming','People & Blog',
+                          'Comedy','Entertainment','News & Politics','Style',
+                          'Education','Sci & Tech','Nonprofit','Show')),
+  selectInput('wa','Want to show:',
+              choices = c('tag count','overlap tag count')),
+  plotOutput('bar')
+)
+
+server <- function(input,output){
+  output$bar <- renderPlot({
+    if(input$ca == 'Film & Animation'){ # 1
+      if(input$wa == 'tag count'){
+        ggplot() + geom_col(data=head(freq_1,20), aes(x=reorder(FilmAni_tags,- number), y=number, fill = -number), color='white') +
+          theme(text = element_text(size=18),axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+      else if(input$wa == 'overlap tag count'){
+        ggplot() + geom_col(data=head(freq_1,20), aes(x=reorder(FilmAni_tags,- overlap_num), y=overlap_num ,fill = - overlap_num), color='white') +
+          theme(text = element_text(size=18), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+    }
+    else if(input$ca == 'Autos'){ # 2
+      if(input$wa == 'tag count'){
+        ggplot() + geom_col(data=head(freq_2,20), aes(x=reorder(Auto_tags,- number), y=number, fill = -number), color='white') +
+          theme(text = element_text(size=18),axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+      else if(input$wa == 'overlap tag count'){
+        ggplot() + geom_col(data=head(freq_2,20), aes(x=reorder(Auto_tags,- overlap_num), y=overlap_num ,fill = - overlap_num), color='white') +
+          theme(text = element_text(size=18), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+    }
+    else if(input$ca == 'Music'){ # 10
+      if(input$wa == 'tag count'){
+        ggplot() + geom_col(data=head(freq_10,20), aes(x=reorder(Music_tags,- number), y=number, fill = -number), color='white') +
+          theme(text = element_text(size=18),axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+      else if(input$wa == 'overlap tag count'){
+        ggplot() + geom_col(data=head(freq_10,20), aes(x=reorder(Music_tags,- overlap_num), y=overlap_num ,fill = - overlap_num), color='white') +
+          theme(text = element_text(size=18), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+    }else if(input$ca == 'Animals'){ # 15
+      if(input$wa == 'tag count'){
+        ggplot() + geom_col(data=head(freq_15,20), aes(x=reorder(Animal_tags,- number), y=number, fill = -number), color='white') +
+          theme(text = element_text(size=18),axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+      else if(input$wa == 'overlap tag count'){
+        ggplot() + geom_col(data=head(freq_15,20), aes(x=reorder(Animal_tags,- overlap_num), y=overlap_num ,fill = - overlap_num), color='white') +
+          theme(text = element_text(size=18), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+    }else if(input$ca == 'Sports'){ # 17
+      if(input$wa == 'tag count'){
+        ggplot() + geom_col(data=head(freq_17,20), aes(x=reorder(Sports_tags,- number), y=number, fill = -number), color='white') +
+          theme(text = element_text(size=18),axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+      else if(input$wa == 'overlap tag count'){
+        ggplot() + geom_col(data=head(freq_17,20), aes(x=reorder(Sports_tags,- overlap_num), y=overlap_num ,fill = - overlap_num), color='white') +
+          theme(text = element_text(size=18), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+    }else if(input$ca == 'Travel & Event'){ # 19
+      if(input$wa == 'tag count'){
+        ggplot() + geom_col(data=head(freq_19,20), aes(x=reorder(Travel_tags,- number), y=number, fill = -number), color='white') +
+          theme(text = element_text(size=18),axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+      else if(input$wa == 'overlap tag count'){
+        ggplot() + geom_col(data=head(freq_19,20), aes(x=reorder(Travel_tags,- overlap_num), y=overlap_num ,fill = - overlap_num), color='white') +
+          theme(text = element_text(size=18), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+    }else if(input$ca == 'Gaming'){ # 20
+      if(input$wa == 'tag count'){
+        ggplot() + geom_col(data=head(freq_20,20), aes(x=reorder(Game_tags,- number), y=number, fill = -number), color='white') +
+          theme(text = element_text(size=18),axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+      else if(input$wa == 'overlap tag count'){
+        ggplot() + geom_col(data=head(freq_20,20), aes(x=reorder(Game_tags,- overlap_num), y=overlap_num ,fill = - overlap_num), color='white') +
+          theme(text = element_text(size=18), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+    }else if(input$ca == 'People & Blog'){ # 22
+      if(input$wa == 'tag count'){
+        ggplot() + geom_col(data=head(freq_22,20), aes(x=reorder(People_tags,- number), y=number, fill = -number), color='white') +
+          theme(text = element_text(size=18),axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+      else if(input$wa == 'overlap tag count'){
+        ggplot() + geom_col(data=head(freq_22,20), aes(x=reorder(People_tags,- overlap_num), y=overlap_num ,fill = - overlap_num), color='white') +
+          theme(text = element_text(size=18), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+    }else if(input$ca == 'Comedy'){ # 23
+      if(input$wa == 'tag count'){
+        ggplot() + geom_col(data=head(freq_23,20), aes(x=reorder(Comedy_tags,- number), y=number, fill = -number), color='white') +
+          theme(text = element_text(size=18),axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+      else if(input$wa == 'overlap tag count'){
+        ggplot() + geom_col(data=head(freq_23,20), aes(x=reorder(Comedy_tags,- overlap_num), y=overlap_num ,fill = - overlap_num), color='white') +
+          theme(text = element_text(size=18), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+    }else if(input$ca == 'Entertainment'){ # 24
+      if(input$wa == 'tag count'){
+        ggplot() + geom_col(data=head(freq_24,20), aes(x=reorder(Entertain_tags,- number), y=number, fill = -number), color='white') +
+          theme(text = element_text(size=18),axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+      else if(input$wa == 'overlap tag count'){
+        ggplot() + geom_col(data=head(freq_24,20), aes(x=reorder(Entertain_tags,- overlap_num), y=overlap_num ,fill = - overlap_num), color='white') +
+          theme(text = element_text(size=18), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+    }else if(input$ca == 'News & Politics'){ # 25
+      if(input$wa == 'tag count'){
+        ggplot() + geom_col(data=head(freq_25,20), aes(x=reorder(Politic_tags,- number), y=number, fill = -number), color='white') +
+          theme(text = element_text(size=18),axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+      else if(input$wa == 'overlap tag count'){
+        ggplot() + geom_col(data=head(freq_25,20), aes(x=reorder(Politic_tags,- overlap_num), y=overlap_num ,fill = - overlap_num), color='white') +
+          theme(text = element_text(size=18), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+    }else if(input$ca == 'Style'){ # 26
+      if(input$wa == 'tag count'){
+        ggplot() + geom_col(data=head(freq_26,20), aes(x=reorder(Comedy_tags,- number), y=number, fill = -number), color='white') +
+          theme(text = element_text(size=18),axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+      else if(input$wa == 'overlap tag count'){
+        ggplot() + geom_col(data=head(freq_26,20), aes(x=reorder(Comedy_tags,- overlap_num), y=overlap_num ,fill = - overlap_num), color='white') +
+          theme(text = element_text(size=18), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+    }else if(input$ca == 'Education'){ # 27
+      if(input$wa == 'tag count'){
+        ggplot() + geom_col(data=head(freq_27,20), aes(x=reorder(Educ_tags,- number), y=number, fill = -number), color='white') +
+          theme(text = element_text(size=18),axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+      else if(input$wa == 'overlap tag count'){
+        ggplot() + geom_col(data=head(freq_27,20), aes(x=reorder(Educ_tags,- overlap_num), y=overlap_num ,fill = - overlap_num), color='white') +
+          theme(text = element_text(size=18), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+    }else if(input$ca == 'Sci & Tech'){ # 28
+      if(input$wa == 'tag count'){
+        ggplot() + geom_col(data=head(freq_28,20), aes(x=reorder(SciTech_tags,- number), y=number, fill = -number), color='white') +
+          theme(text = element_text(size=18),axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+      else if(input$wa == 'overlap tag count'){
+        ggplot() + geom_col(data=head(freq_28,20), aes(x=reorder(SciTech_tags,- overlap_num), y=overlap_num ,fill = - overlap_num), color='white') +
+          theme(text = element_text(size=18), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+    }else if(input$ca == 'Nonprofit'){ # 29
+      if(input$wa == 'tag count'){
+        ggplot() + geom_col(data=head(freq_29,20), aes(x=reorder(Nonprofit_tags,- number), y=number, fill = -number), color='white') +
+          theme(text = element_text(size=18),axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+      else if(input$wa == 'overlap tag count'){
+        ggplot() + geom_col(data=head(freq_29,20), aes(x=reorder(Nonprofit_tags,- overlap_num), y=overlap_num ,fill = - overlap_num), color='white') +
+          theme(text = element_text(size=18), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+    }else if(input$ca == 'Show'){ # 43
+      if(input$wa == 'tag count'){
+        ggplot() + geom_col(data=head(freq_43,20), aes(x=reorder(Show_tags,- number), y=number, fill = -number), color='white') +
+          theme(text = element_text(size=18),axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+      else if(input$wa == 'overlap tag count'){
+        ggplot() + geom_col(data=head(freq_43,20), aes(x=reorder(Show_tags,- overlap_num), y=overlap_num ,fill = - overlap_num), color='white') +
+          theme(text = element_text(size=18), axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank()) 
+      }
+    }
+  })
+}
+shinyApp(ui,server)
