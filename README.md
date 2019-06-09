@@ -12,3 +12,5 @@ https://www.msn.com/ko-kr/news/national/%EC%84%9C%EC%9A%B8%EC%97%90-%EB%82%98%EB
 - 최종산출물 : 
 - 기대효과 : 
 - Git 저장소 : https://github.com/shd04121/heat_island_ds_yonsei 
+
+회의록 : https://etherpad.net/p/dessaip
