@@ -1,0 +1,163 @@
+---
+title: "유튜브 뽀개기!"
+author: "사회학과 3학년 간정현"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# **목차**
+
+### 1. 데이터 소개
+### 2. 끝
+
+HELLO WORLD :)
+
+# **데이터셋 소개**
+
+## Youtube 인기 동영상
+
+- a daily record of the **top trending YouTube videos**
+- YouTube uses a combination of factors including measuring users interactions(not the most-viewed videos)
+- up to 200 listed trending videos per day
+- collected using the YouTube API
+- 출처; https://www.kaggle.com/datasnaek/youtube-new
+
+## 데이터 살펴보기 - 모양
+
+```{r library, include=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(DT)
+library(knitr)
+library(jsonlite)
+library(kableExtra)
+options(scipen = 100)
+```
+
+```{r dataset, echo=TRUE, message=FALSE}
+KRvideos <- read_csv('KRvideos.csv')
+ncol(KRvideos); nrow(KRvideos)
+colnames(KRvideos)
+```
+
+## 데이터 살펴보기 - 수집 기간
+
+```{r trending_date, echo=TRUE}
+KRvideos$trending_date[1]
+KRvideos$trending_date[length(KRvideos$trending_date)]
+min(as.Date(KRvideos$trending_date, format = '%y.%d.%m'))
+max(as.Date(KRvideos$trending_date, format = '%y.%d.%m'))
+```
+
+## 데이터 살펴보기 - 채널
+
+몇 개의 채널이 인기 동영상에 올라왔을까?
+```{r channel_title, cache=TRUE}
+length(unique(KRvideos$channel_title))
+
+channel_freq <- table(KRvideos$channel_title) %>%
+  data.frame() %>%
+  arrange(desc(Freq))
+
+knitr::kable(channel_freq[1:10,], col.names = c("Channel Title", "Frequency"))%>%
+   kable_styling(font_size = 14)
+```
+
+## 데이터 살펴보기 - 카테고리
+
+```{r category_id_sort, echo=TRUE}
+sort(unique(KRvideos$category_id))
+length(unique(KRvideos$category_id))
+```
+
+총 17개의 카테고리
+
+## 데이터 살펴보기 - 카테고리
+
+```{r category_join, include=FALSE}
+category_freq <- KRvideos %>%
+  group_by(category_id) %>%
+  tally()
+names(category_freq) <- c('id', 'freq')
+
+KR_category_id <- fromJSON('KR_category_id.json') %>% data.frame()
+KR_category_id <- data.frame(id = as.numeric(KR_category_id$items.id), title = KR_category_id$items.snippet$title)
+category_title <- data.frame(id = unique(KRvideos$category_id)) %>%
+  left_join(KR_category_id) %>%
+  left_join(category_freq) %>%
+  arrange(id)
+```
+
+```{r category_kable}
+knitr::kable(category_title, col.names = c("ID", "Title", "Frequency")) %>%
+  kable_styling(font_size = 9, full_width = T)
+```
+
+## 데이터 살펴보기 - 카테고리
+
+```{r category_plot}
+ggplot(KRvideos, aes(x=factor(category_id))) + geom_bar()
+```
+
+## 데이터 살펴보기 - 카테고리
+
+```{r}
+df <- KRvideos %>%
+  group_by(category_id) %>%
+  summarise(mean_views = floor(mean(views)),
+            mean_comments = floor(mean(comment_count)),
+            mean_likes = floor(mean(likes)),
+            mean_dislikes = floor(mean(dislikes)))
+
+kable(df) %>%
+  kable_styling(font_size=9)
+```
+
+## 데이터 살펴보기 - 조회 수
+
+```{r}
+df <- data.frame(df)
+ggplot(df, aes(x=as.factor(category_id), y=mean_views)) + geom_bar(stat='identity')
+```
+
+10: music  
+28: science technology
+
+## 데이터 살펴보기 -  댓글 수
+
+```{r}
+ggplot(df, aes(x=as.factor(category_id), y=mean_comments)) + geom_bar(stat='identity')
+```
+
+10: music  
+28: science technology
+
+## 데이터 살펴보기 - 좋아요 수
+
+```{r}
+ggplot(df, aes(x=as.factor(category_id), y=mean_likes)) + geom_bar(stat='identity')
+```
+
+10: music  
+28: science technology
+
+## 데이터 살펴보기 - 싫어요 수
+
+```{r}
+ggplot(df, aes(x=as.factor(category_id), y=mean_dislikes)) + geom_bar(stat='identity')
+```
+
+24: entertainment  
+
+## 데이터 살펴보기 - Science/Technology
+```{r echo=TRUE}
+science_technology <- subset.data.frame(KRvideos, category_id==28)
+sample(unique(science_technology$title), 15)
+```
+
+# 끝!
+
+### **감사합니다 :)**
