@@ -41,7 +41,7 @@ quantile(heat_sf$b_sum, seq(0,1,length=8))
 
 ## 팔레트
 b_bins <- c(0, 1, 3, 5, 10, 15, 30, 55)
-b_pal  <- colorBin("Greys", domain = heat_sf$g_sum , bins = b_bins)
+b_pal  <- colorBin("Greys", domain = heat_sf$b_sum , bins = b_bins)
 
 ## 라벨
 b_labels <- sprintf(
