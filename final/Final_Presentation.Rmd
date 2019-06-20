@@ -17,7 +17,7 @@ editor_options:
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
-setwd("D:/workspace/ds_yonsei/project/PPT (2)")
+setwd("D:/workspace/ds_yonsei/project/final ppt")
 ```
 
 ```{r library, echo=FALSE, warning=FALSE, message=FALSE}
@@ -30,6 +30,7 @@ library(knitr)
 library(ggmap)
 library(sf)
 library(leaflet)
+library(DT)
 ```
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
@@ -37,6 +38,7 @@ grid_sf <- st_read("grid/grid.shp")
 heat_df <- read.csv('final.csv', encoding='CP949') # 최종
 data <- read.csv('data.csv', header = TRUE) # 모든 변수 ... 원래 파일 이름: 최종본_추가
 heat_index <- read_csv("heat.csv")
+heat_island <- read.csv("heat_areas_factor.csv", header=TRUE)
 colnames(heat_df)[5] <- "road_ratio" 
 
 heat_sf <- grid_sf %>% left_join(heat_df, by = c("fid"="fid"))
@@ -90,12 +92,11 @@ class: center, middle
 
 ### **2-1. 사용한 데이터**
 ***
-
 #### 1) **랜샛 위성  사진** : 지표면 온도 파악
 #### 2) **미세먼지 데이터** : 입자 크기별 미세먼지 농도
-#### 2) **풍속/풍향** : 지상 10m, 80m에서 연 평균 풍속/풍향 
-#### 3) **토지피복** : 상업 업무지, 도로, 일반주택지, 인공녹지, 하천 등
-#### 4) **고도** : 해발고도
+#### 3) **풍속/풍향** : 지상 10m, 80m에서 연 평균 풍속/풍향 
+#### 4) **토지피복** : 상업 업무지, 도로, 일반주택지, 인공녹지, 하천 등
+#### 5) **고도** : 해발고도
 
 </br> 
 ###### 데이터 출처: 서울 열린데이터 광장, 국가공간정보포털, 기상청, 기타 공공데이터 포털
@@ -117,11 +118,13 @@ class: center, middle
 ### 분석 흐름
 ***
 
-### 1) 열섬현상(온도)과 미세먼지의 지리적 분포 파악
+### 1) 열섬현상(온도)의 지리적 분포 파악
 
-### 2) 상관관계 분석을 통해 열섬현상과 미세먼지에 영향을 미치는 변수 파악
+### 2) 상관관계 분석을 통해 열섬현상에 영향을 미치는 변수 파악
 
 ### 3) 추려진 변수들을 통해 지역을 클러스터링
+
+### 4) 열섬현상이 심한 지역에 대해 자세한 분석
 </br> 
 ## >> *각 클러스터의 특성을 고려해 해결책 제시*  
 
@@ -135,8 +138,9 @@ class: center, middle
 ####2. 풍속(X10m_wind_speed, X80m_wind_speed, difference_wind)  
 ####3. 토지피복도(녹지)
 ####4. 토지피복도(건물)
-####5. 토지피복도(도로비율)
+####5. 토지피복도(도로)
 ####6. 해발고도(avg_ele, num_ele)
+####7. 토양 배수등급(양호비율, 불량비율)
 
 ---
 # **3. 분석 결과 **
@@ -383,7 +387,7 @@ grid.arrange(barplot1, barplot2, nrow=1, ncol=2)
 
 # **3. 분석 결과**
 
-## 클러스터 간 차이 (해발 평균, 배수등급 불량비율)
+## 클러스터 간 차이 (해발 평균, 하천 비율 평균)
 ***
 ```{r echo=FALSE, warnings=FALSE, message=FALSE, fig.align='center', fig.width=12}
 ele <- heat_sf[,c(1,33,30)]
@@ -398,19 +402,54 @@ barplot1 <- ggplot(avg_ele, aes(x=label, y=avg_ele, fill=label)) +
   scale_fill_hue(c = 40) +
   ggtitle("평균 해발고도")
 
+water <- heat_sf[,c(1,33,7)]
+water <- water %>% group_by(label) %>%
+  summarize(avg_water=mean(하천.수계._비율,na.rm=T))
+
+water$label <- factor(water$label)
+
+barplot2 <- ggplot(water, aes(x=label, y=avg_water, fill=label)) +
+  geom_bar(stat="identity") +
+  scale_fill_manual(values = c("red", "green", "blue", "purple") ) +
+  scale_fill_hue(c = 40) +
+  ggtitle("평균 하천(수계) 비율")
+
+grid.arrange(barplot1, barplot2, nrow=1, ncol=2)
+```
+
+---
+
+# **3. 분석 결과**
+
+## 클러스터 간 차이 (평균 토양 배수등급 불량 비율, 도로 비율)
+
+```{r}
+
 bad <- heat_sf[,c(1,33,21)]
 bad <- bad %>% group_by(label) %>%
   summarize(avg_bad=mean(순수불량_비율,na.rm=T))
 
 bad$label <- factor(bad$label)
 
-barplot2 <- ggplot(bad, aes(x=label, y=avg_bad, fill=label)) +
+barplot1 <- ggplot(bad, aes(x=label, y=avg_bad, fill=label)) +
   geom_bar(stat="identity") +
   scale_fill_manual(values = c("red", "green", "blue", "purple") ) +
   scale_fill_hue(c = 40) +
   ggtitle("평균 토양 배수등급 불량 비율")
 
-grid.arrange(barplot1, barplot2, nrow=1, ncol=2)
+road <- heat_sf[,c(1,33,5)]
+road <- road %>% group_by(label) %>%
+  summarize(avg_road=mean(road_ratio,na.rm=T))
+
+road$label <- factor(road$label)
+
+barplot2 <- ggplot(road, aes(x=label, y=avg_road, fill=label)) +
+  geom_bar(stat="identity") +
+  scale_fill_manual(values = c("red", "green", "blue", "purple") ) +
+  scale_fill_hue(c = 40) +
+  ggtitle("평균 도로 비율")
+
+grid.arrange(barplot2, barplot1, nrow=1, ncol=2)
 ```
 
 ---
@@ -419,7 +458,7 @@ grid.arrange(barplot1, barplot2, nrow=1, ncol=2)
 ## 클러스터 간 차이 (해석)
 ***
 ### -클러스터 0 : 온도가 높은 **도심** 지역
-건물 밀집도, 토양 배수등급 불량 비율이 높음
+건물 밀집도, 토양 배수등급 불량 등의 비율이 높음
 
 ### -클러스터 1 : 딱히 두드러진 특징이 보이지 않음 ...
 
@@ -429,7 +468,24 @@ grid.arrange(barplot1, barplot2, nrow=1, ncol=2)
 해발고도가 높고 평균 녹지 면적이 넓음
 
 ### >> 도시적 특성과 열섬현상의 관계에 집중
+
 ---
+
+# **3. 분석 결과 **
+
+## 클러스터 분포
+***
+
+```{r 시각화, echo=FALSE, warning=FALSE, message=FALSE, fig.align='center'}
+heat_sf %>% 
+  group_by(label) %>% 
+  select(label) %>% 
+  plot(main="Clustering")
+```
+
+---
+
+
 # **3. 분석 결과**
 ## 열섬지표  
 ***
@@ -532,8 +588,6 @@ leaflet(heat_sf) %>%
 ####2. fid 403, 408, 431, 381:
 - 북한산의 차가운 공기가 내려오지 못한다고 추측  
 
-#### >> 북서풍/서풍 방향으로 바람길 조성
-
 ---
 # **4. 해결책 제시**
 
@@ -551,6 +605,9 @@ leaflet(heat_sf) %>%
 ***
 ###- 열섬 측도가 높은 지역에 도시숲 및 식수대(도로 양옆 가로수길)조성
 ###- 건물 밀집도와 배수등급이 불량인 지역에 옥상정원 조성
+```{r}
+DT::datatable(heat_island)
+```
 
 ---
 
@@ -575,7 +632,7 @@ leaflet(heat_sf) %>%
 - 키 큰 나무를 밀도 있게 심어 신선하고 차가운 공기가 고이는 공기 댐을 만들고 강한 공기의 흐름을 확산
 
 ```{r echo=FALSE, warnings=FALSE, message=FALSE, fig.align='center'}
-register_google(key='#######')
+register_google(key='###########')
 # 악용의 우려가 있어 구글 API 키를 제거했습니다.
 
 gc <- geocode(enc2utf8("노원구")) %>%
@@ -588,6 +645,14 @@ map =  get_googlemap(center=gc,
 ggmap(map)
 ```
 
+---
+
+# **4. 해결책 제시**
+
+## 서울의 풍향/풍속 분포
+***
+#### >> 북서풍과 서풍 방향으로 바람길 조성  
+<center><img src="image/windDS.png" width="70%"></center>
 
 ---
 
