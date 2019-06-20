@@ -1,0 +1,66 @@
+---
+title: "Wind speed visualization"
+author: "Seunghee Nam"
+date: "2019년 6월 20일"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r lib, message=FALSE}
+
+library(tidyverse)
+library(sf)
+library(leaflet)
+
+```
+
+```{r setwd, echo=FALSE}
+
+setwd("C:/Users/shd04/Desktop/2019/1_Data_Science/project")
+
+```
+
+```{r files}
+
+grid_sf <- st_read("data/shapefile/grid/grid.shp") # 그리드
+heat_df <- read.csv("final.csv", header = TRUE) # 열섬 요소
+
+heat_sf  <- grid_sf %>% left_join(heat_df, by = c("fid"="fid"))
+heat_sf$label <- heat_sf$label %>% as.character() %>% as.factor()
+
+```
+
+# 풍속 시각화
+
+```{r wind}
+
+## 팔레트
+wind_bins <- c(2.2, 2.5, 2.7, 3.0, 3.5, 4, 4.5)
+wind_pal  <- colorBin("Blues", domain = heat_sf$X10m_wind_speed , bins = wind_bins)
+
+## 라벨
+wind_labels <- sprintf(
+  "<strong>cluster : %s</strong><br/> 10m wind speed : %g m/s <br/>80m wind speed : %g m/s <br/> average temperature : %g\u00B0C",
+  heat_sf$label, heat_sf$X10m_wind_speed, heat_sf$X80m_wind_speed, heat_sf$avg_tmp 
+) %>% lapply(htmltools::HTML)
+
+leaflet(heat_sf) %>%
+  addTiles() %>% 
+  addPolygons(opacity = 1.0, fillOpacity = 0.8,
+              weight = 1,
+              fillColor = ~wind_pal(X10m_wind_speed),
+              highlightOptions = highlightOptions(color = "black", weight = 3,  bringToFront = TRUE),
+              label = wind_labels,
+              labelOptions = labelOptions(
+              style = list("font-weight" = "normal", padding = "3px 8px"),
+              textsize = "15px",
+              direction = "auto")) %>% 
+    addLegend("bottomright", pal = wind_pal, values = ~X10m_wind_speed,
+    title = "고도 10m에서의 풍속",
+    labFormat = labelFormat(suffix = "m/s"),
+    opacity = 1)
+
+```

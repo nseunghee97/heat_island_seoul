@@ -1,0 +1,66 @@
+---
+title: "녹지 면적 비율 시각화"
+author: "Seunghee Nam"
+date: "2019년 6월 20일"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r lib, message=FALSE}
+
+library(tidyverse)
+library(sf)
+library(leaflet)
+
+```
+
+```{r setwd, echo=FALSE}
+
+setwd("C:/Users/shd04/Desktop/2019/1_Data_Science/project")
+
+```
+
+```{r files}
+
+grid_sf <- st_read("data/shapefile/grid/grid.shp") # 그리드
+heat_df <- read.csv("final.csv", header = TRUE) # 열섬 요소
+
+heat_sf  <- grid_sf %>% left_join(heat_df, by = c("fid"="fid"))
+heat_sf$label <- heat_sf$label %>% as.character() %>% as.factor()
+
+```
+
+# 녹지 시각화
+
+```{r green}
+
+## 팔레트
+green_bins <- c(0, 0.1, 0.5, 2, 10, 20, 50, 100)
+green_pal  <- colorBin("Greens", domain = heat_sf$g_sum , bins = green_bins)
+
+## 라벨
+green_labels <- sprintf(
+  "<strong>cluster : %s</strong><br/> green area ratio : %g percent <br/> average temperature : %g\u00B0C",
+  heat_sf$label, heat_sf$g_sum, heat_sf$avg_tmp 
+) %>% lapply(htmltools::HTML)
+
+leaflet(heat_sf) %>%
+  addTiles() %>% 
+  addPolygons(opacity = 1.0, fillOpacity = 0.8,
+              weight = 1,
+              fillColor = ~green_pal(g_sum),
+              highlightOptions = highlightOptions(color = "black", weight = 3,  bringToFront = TRUE),
+              label = green_labels,
+              labelOptions = labelOptions(
+              style = list("font-weight" = "normal", padding = "3px 8px"),
+              textsize = "15px",
+              direction = "auto")) %>% 
+    addLegend("bottomright", pal = green_pal, values = ~g_sum,
+    title = "녹지 비율",
+    labFormat = labelFormat(suffix = "percent"),
+    opacity = 1)
+
+```

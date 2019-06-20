@@ -1,0 +1,68 @@
+---
+title: "건물 면적 비율 시각화"
+author: "Seunghee Nam"
+date: "2019년 6월 20일"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r lib, message=FALSE}
+
+library(tidyverse)
+library(sf)
+library(leaflet)
+
+```
+
+```{r setwd, echo=FALSE}
+
+setwd("C:/Users/shd04/Desktop/2019/1_Data_Science/project")
+
+```
+
+```{r files}
+
+grid_sf <- st_read("data/shapefile/grid/grid.shp") # 그리드
+heat_df <- read.csv("final.csv", header = TRUE) # 열섬 요소
+
+heat_sf  <- grid_sf %>% left_join(heat_df, by = c("fid"="fid"))
+heat_sf$label <- heat_sf$label %>% as.character() %>% as.factor()
+
+```
+
+# 건물 시각화
+
+```{r building}
+
+quantile(heat_sf$b_sum, seq(0,1,length=8))
+
+## 팔레트
+b_bins <- c(0, 1, 3, 5, 10, 15, 30, 55)
+b_pal  <- colorBin("Greys", domain = heat_sf$g_sum , bins = b_bins)
+
+## 라벨
+b_labels <- sprintf(
+  "<strong>cluster : %s</strong><br/> building area ratio : %g percent <br/> average temperature : %g\u00B0C",
+  heat_sf$label, heat_sf$b_sum, heat_sf$avg_tmp 
+) %>% lapply(htmltools::HTML)
+
+leaflet(heat_sf) %>%
+  addTiles() %>% 
+  addPolygons(opacity = 1.0, fillOpacity = 0.8,
+              weight = 1,
+              fillColor = ~b_pal(b_sum),
+              highlightOptions = highlightOptions(color = "black", weight = 3,  bringToFront = TRUE),
+              label = b_labels,
+              labelOptions = labelOptions(
+              style = list("font-weight" = "normal", padding = "3px 8px"),
+              textsize = "15px",
+              direction = "auto")) %>% 
+    addLegend("bottomright", pal = b_pal, values = ~b_sum,
+    title = "건물 비율",
+    labFormat = labelFormat(suffix = "percent"),
+    opacity = 1)
+
+```

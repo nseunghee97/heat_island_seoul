@@ -1,0 +1,49 @@
+---
+title: "클러스터별 시각화"
+author: "Seunghee Nam"
+date: "2019년 6월 20일"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r lib, message=FALSE}
+
+library(tidyverse)
+library(sf)
+library(leaflet)
+
+```
+
+```{r setwd, echo=FALSE}
+
+setwd("C:/Users/shd04/Desktop/2019/1_Data_Science/project")
+
+```
+
+```{r files}
+
+grid_sf <- st_read("data/shapefile/grid/grid.shp") # 그리드
+heat_df <- read.csv("final.csv", header = TRUE) # 열섬 요소
+
+heat_sf  <- grid_sf %>% left_join(heat_df, by = c("fid"="fid")) 
+heat_sf$label <- heat_sf$label %>% as.character() %>% as.factor()
+
+```
+
+
+# 클러스터
+
+```{r cluster}
+
+heat_sf %>% 
+  group_by(label) %>% 
+  select(label) %>% 
+  plot(main="Clustering")
+
+```
+
