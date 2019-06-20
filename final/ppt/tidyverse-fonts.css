@@ -1,0 +1,26 @@
+@import url(https://fonts.googleapis.com/css?family=Cute+Font|Jua|Dokdo|Nanum+Pen+Script|Nanum+Gothic|Do+Hyeon);
+
+title {
+  font-family: 'Do Hyeon', sans-serif;
+  font-size: 24px;
+}
+
+h1 {
+  font-family: 'Do Hyeon', sans-serif;
+  font-size: 24px;
+}
+
+h2, h3 {
+  font-family: 'Do Hyeon',  cursive;
+  font-size: 20px;
+}
+
+body {
+  font-family: 'Jua',  cursive;
+  font-size: 20px;
+}
+
+p {
+  font-family: 'Nanum Gothic', sans-serif;
+  font-size: 17px;
+}

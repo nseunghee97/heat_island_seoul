@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>서울시 열섬현상 분석과 해결책 제시</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="(무언가를) 뽀개기" />
+    <meta name="date" content="2019-06-20" />
+    <link rel="stylesheet" href="mtheme.css" type="text/css" />
+    <link rel="stylesheet" href="tidyverse-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# 서울시 열섬현상 분석과 해결책 제시
+## ♣</br>
+### (무언가를) 뽀개기
+### 2019-06-20
+
+---
+
+
+
+
+
+
+# **목차  **
+
+##1. 문제 정의  
+
+##2. 데이터 및 분석 도구
+
+##3. 분석 과정
+
+##4. 분석 결과 및 해결책 제시
+
+
+---
+
+#**1. 문제 정의**
+
+## **열섬 현상과 미세먼지가 심각한 사회 문제로 대두**
+
+
+###1) 도시 열섬 현상  
+- 열섬 현상: 비도시 지역에 비해 도시 지역의 온도가 높아지는 현상  
+- 여름철 폭염과 열대야로 인한 피해
+- 열섬 현상을 유발하는 도시적 특성들을 교정할 필요
+
+###2) 미세먼지
+&lt;img src="heat_dust.JPG" width="50%"&gt;
+- 미세먼지로 인한 심장 질환 및 폐 질환 사례 증가  
+- 미세먼지 완화를 위한 해결책 제시
+
+
+## &gt;&gt; &lt;u&gt;바람길 조성&lt;/u&gt;과 &lt;u&gt;녹지화&lt;/u&gt;가 효과적인 해결책 (성선용 외,  2019)  
+
+---
+class: center, middle
+
+
+### 열섬현상과 미세먼지를 효과적으로 해결할 수 있는
+
+##**최적의 바람길 / 녹지 위치 선정!**
+
+---
+
+### **위치 선정을 위해 고려할 요소들**  
+
+###1) 온도 / 미세먼지
+여름/겨울철 최저/평균/최고 온도와 미세먼지 농도 분석
+###2) 풍속과 풍향
+바람과의 상관관계 분석을 통한 바람길 입지 선정
+###3) 토지피복
+온도 및 미세먼지의 증가와 관련있는 변수 선정
+###4) 고도
+
+###5) 토양배수등급
+
+---
+
+# **2. 데이터 및 분석 도구**
+###- **랜샛 위성  사진** : 지표면 온도 파악
+###- **풍속/풍향** : 지상 10m, 80m에서 연 평균 풍속/풍향 
+###- **토지피복** : 상업 업무지, 도로, 일반주택지, 인공녹지, 하천 등
+###- **고도** : 해발고도
+###- **토양배수등급** : 6개의 범주
+###- **서울시 경계 파일**
+
+###- 미세먼지는 어떤 식으로 구하셨는지요 !
+###- 여기서 더 빠진 파일들이 있을까용 ...?
+
+---
+
+
+# **2. 데이터 및 분석 도구**
+## **분석도구**
+- R, Python
+- QGIS
+: 데이터 뷰, 편집, 분석을 제공하는 오픈소스 데스크톱 지리 정보 체계 응용 프로그램
+  
+  
+  
+  
+## **데이터 출처**
+- 서울 열린데이터 광장  
+- 국가공간정보포털  
+- 기상청  
+- 기타 공공데이터
+
+---
+
+# **3. 분석 과정 **
+  
+### **온도**
+: 하나의 구 내에서도 온도 및 미세먼지 농도에 큰 차이가 있어 573개의 그리드로 구분하여 분석
+
+&lt;center&gt;&lt;img src="temperature.png" width="80%"&gt;&lt;/center&gt;
+
+---
+
+# **3. 분석 과정 **
+## **미세먼지**
+
+&lt;center&gt;&lt;img src="dust10.png" width="80%"&gt;&lt;/center&gt;
+
+---
+
+# **3. 분석 과정 **
+## **미세먼지**
+
+&lt;center&gt;&lt;img src="dust25.png" width="90%"&gt;&lt;/center&gt;
+
+---
+
+# **3. 분석 과정**
+## **풍향**
+
+&lt;center&gt;&lt;img src="wind10.png" width="90%"&gt;&lt;/center&gt;
+
+---
+
+# **3. 분석 과정**
+## **풍향**
+
+&lt;center&gt;&lt;img src="wind80.png" width="100%"&gt;&lt;/center&gt;
+
+---
+
+# **3. 분석 과정**
+## **풍향**
+
+&lt;center&gt;&lt;img src="winddiff.png" width="90%"&gt;&lt;/center&gt;
+
+---
+
+# **3. 분석 과정**
+
+
+
+## **풍향**
+**: 서풍, 북서풍이 가장 큰 비중을 차지**
+
+![](example_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+
+---
+
+# **3. 분석 과정 **
+## **토지피복**
+
+---
+
+# **3. 분석 과정 **
+## **고도**
+
+---
+
+# **4. 분석 결과**
+
+## **녹지**  
+
+
+***
+  
+### **바람길**
+
+
+---
+##참고문헌  
+
+- 성선용, 박종순, 이상은, 김선희. (2019). 미세먼지 저감을 위한 도시 내 바람길 도입 방안. 국토정책 Brief, (), 1-6.  
+  
+- 김용진, 강동화, 안건혁. (2019). 기후변화에 따른 도시열섬현상 특성 변화와 도시설 계적 대안 모색에 관한 기초연구. 한국도시설계학회지 도시설계, 12(3), 5-14.
+  
+- 김수봉, 정응호, 김용범. (2004). 도시열섬현상 완화를 위한 대구시 바람길 도입 및 조성방안에 관한 연구. 환경과학논집, 9, 143-156.
+
+---
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
