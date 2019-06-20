@@ -1,0 +1,61 @@
+---
+title: "도로 비율"
+author: "JEON"
+editor_options: 
+  chunk_output_type: console
+  
+---
+
+```{r, message=FALSE}
+
+library(tidyverse)
+library(sf)
+library(leaflet)
+
+```
+
+```{r files}
+
+grid_sf <- st_read("grid/grid.shp") # 그리드
+heat_df <- read.csv("final_variable.csv", header = TRUE, encoding='UTF-8') # 열섬 요소
+
+heat_sf  <- grid_sf %>% left_join(heat_df, by = c("fid"="fid"))
+heat_sf$label <- heat_sf$label %>% as.character() %>% as.factor()
+
+```
+
+```{r road}
+
+colnames(heat_sf)[5] <- "road_ratio"
+
+# quantile(x, seq(0,1,length=8))
+# x <- all$`도로(도시)_비율`
+
+
+## 팔레트
+road_bins <- c(0, 30, 55, 75, 80, 85, 90, 100)
+road_pal  <- colorBin("YlOrBr", domain = heat_sf$road_ratio, bins = road_bins)
+
+## 라벨
+road_labels <- sprintf(
+  "<strong>cluster : %s</strong><br/> road ratio : %g <br/> average temperature : %g\u00B0C",
+  heat_sf$label, heat_sf$road_ratio, heat_sf$avg_tmp 
+) %>% lapply(htmltools::HTML)
+
+leaflet(heat_sf) %>%
+  addTiles() %>% 
+  addPolygons(opacity = 1.0, fillOpacity = 0.8,
+              weight = 1,
+              fillColor = ~road_pal(road_ratio),
+              highlightOptions = highlightOptions(color = "black", weight = 3,  bringToFront = TRUE),
+              label = road_labels,
+              labelOptions = labelOptions(
+              style = list("font-weight" = "normal", padding = "3px 8px"),
+              textsize = "15px",
+              direction = "auto")) %>% 
+    addLegend("bottomright", pal = road_pal, values = ~road_ratio,
+    title = "도로 비율",
+    labFormat = labelFormat(suffix = "(%)"),
+    opacity = 1)
+
+```
