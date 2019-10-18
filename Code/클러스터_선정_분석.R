@@ -8,7 +8,7 @@ library(lmtest)
 library(corrplot)
 
 ## 클러스터별 비교
-setwd('C:/Users/요우용/Desktop/데사입_프로젝트/그리드화')
+#setwd('C:/Users/요우용/Desktop/데사입_프로젝트/그리드화')
 file1 <- read.csv('최종본.csv',header=T,stringsAsFactors=F,fileEncoding='utf-8')
 head(file1)
 
@@ -127,7 +127,7 @@ corrplot(corr3)
 corr4
 
 set.seed(1) 
-m_random <- randomForest(avg_tmp~.,data=data4,importance=T)
+m_random <- randomForest(avg_tmp~.,data=tmp,importance=T)
 m_random # 32.13
 varImpPlot(m_random,main='varlmPlot of 변수정리O_cluster1_rescale2 변수 일부 삭제')
 
@@ -136,8 +136,59 @@ vars_df <-as.data.frame(vars)
 vars_df # %IncMSE data.frame 
 write.csv(vars_df,'MSE 데이터프레임.csv',row.names=T)
 
+folds <- data4$avg_tmp %>% createFolds(k=5)
 
+R2 <- sapply(folds, function (idx) {
+  df.train.i <- data4[-idx, ]
+  df.test.i <- data4[idx, ]
+  model.i <- randomForest(avg_tmp ~ ., data=df.train.i)
+  y.i <- df.test.i$avg_tmp
+  y.hat.i <- predict(model.i, newdata=df.test.i)
+  score = R2(y.hat.i,y.i)
+  return(score)
+})
 
+RMSE <- sapply(folds, function (idx) {
+  df.train.i <- data4[-idx, ]
+  df.test.i <- data4[idx, ]
+  model.i <- randomForest(avg_tmp ~ ., data=df.train.i)
+  y.i <- df.test.i$avg_tmp
+  y.hat.i <- predict(model.i, newdata=df.test.i)
+  score = RMSE(y.hat.i,y.i)
+  return(score)
+})
 
+R2 %>% mean()
+RMSE %>% mean()
 
+tmp = file1_rescale %>%
+  select(-label,
+         -min_tmp,
+         -fid,
+         -max_tmp,-max_ele,-min_ele,-diff_ele,-max_dust_10,-min_dust_10,-X80m_wind_speed,-인공녹지.도시._비율,
+                         -자연초지.임지._비율,-인공초지.임지._비율,-경지정리답.농지._비율)
 
+folds <- tmp$avg_tmp %>% createFolds(k=5)
+
+R2 <- sapply(folds, function (idx) {
+  df.train.i <- tmp[-idx, ]
+  df.test.i <- tmp[idx, ]
+  model.i <- randomForest(avg_tmp ~ ., data=df.train.i)
+  y.i <- df.test.i$avg_tmp
+  y.hat.i <- predict(model.i, newdata=df.test.i)
+  score = R2(y.hat.i,y.i)
+  return(score)
+})
+
+RMSE <- sapply(folds, function (idx) {
+  df.train.i <- tmp[-idx, ]
+  df.test.i <- tmp[idx, ]
+  model.i <- randomForest(avg_tmp ~ ., data=df.train.i)
+  y.i <- df.test.i$avg_tmp
+  y.hat.i <- predict(model.i, newdata=df.test.i)
+  score = RMSE(y.hat.i,y.i)
+  return(score)
+})
+
+R2 %>% mean()
+RMSE %>% mean()
