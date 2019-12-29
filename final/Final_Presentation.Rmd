@@ -34,11 +34,11 @@ library(DT)
 ```
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
-grid_sf <- st_read("grid/grid.shp")
-heat_df <- read.csv('final.csv', encoding='CP949') # 최종
-data <- read.csv('data.csv', header = TRUE) # 모든 변수 ... 원래 파일 이름: 최종본_추가
-heat_index <- read_csv("heat.csv")
-heat_island <- read.csv("heat_areas_factor.csv", header=TRUE)
+grid_sf <- st_read("./grid/grid.shp")
+heat_df <- read.csv('./final.csv', encoding='CP949') # 최종
+data <- read.csv('./data.csv', header = TRUE) # 모든 변수 ... 원래 파일 이름: 최종본_추가
+heat_index <- read_csv("./heat.csv")
+heat_island <- read.csv("./heat_areas_factor.csv", header=TRUE)
 colnames(heat_df)[5] <- "road_ratio" 
 
 heat_sf <- grid_sf %>% left_join(heat_df, by = c("fid"="fid"))
